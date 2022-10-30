@@ -37,7 +37,12 @@ public class LoginCheckFilter implements Filter {
                 "/employee/login",
                 "/employee/logout",
                 "/backend/**",
-                "/front/**"
+                "/front/**",
+                //而这样的话，就要求我们在测试时，每一次都需要先登录，
+                // 登录完成后在进行图片上传的测试，为了简化我们的测试，
+                // 我们可以在 LoginCheckFilter 的doFilter方法中，在
+                // 不需要处理的请求路径的数组中再加入请求路径 /common/** , 如下:
+                "/common/**"
         };
 
 
