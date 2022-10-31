@@ -47,7 +47,7 @@
             data(){
                 return {
                     form:{
-                        phone:'',
+                        phone:'15113594279',
                         code:''
                     },
                     msgFlag:false,
@@ -58,20 +58,37 @@
             created(){},
             mounted(){},
             methods:{
-                getCode(){
+                async getCode(){
                     this.form.code = ''
                     const regex = /^(13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9})|(19[0-9]{9})$/;
                     if (regex.test(this.form.phone)) {
                         this.msgFlag = false
-                        this.form.code = (Math.random()*1000000).toFixed(0)
+                        //this.form.code = (Math.random()*1000000).toFixed(0)
+                        //const res = await loginCode({phone:this.form.phone})
+                        const params={phone:this.form.phone}
+                        const res = await $axios({
+                            'url': '/user/sendMsg',
+                            'method': 'post',
+                            params
+                        })
+                        this.form.code=1234
+                        console.log("发送了验证吗")
+
                     }else{
                         this.msgFlag = true
                     }
                 },
                 async btnLogin(){
+                    console.log(this.form.phone,this.form.code)
                     if(this.form.phone && this.form.code){
                         this.loading = true
-                        const res = await loginApi({phone:this.form.phone})
+                        //const res = await loginApi({phone:this.form.phone,code:this.form.code})
+                        const params={phone:this.form.phone,code:this.form.code}
+                        const res = await $axios({
+                            'url': '/user/login',
+                            'method': 'post',
+                            params
+                        })
                         this.loading = false
                         if(res.code === 1){
                             sessionStorage.setItem("userPhone",this.form.phone)
@@ -85,23 +102,6 @@
                         this.$notify({ type:'warning', message:'请输入手机号码'});
                     }
                 },
-                async code(){
-                    if(this.form.phone && this.form.code){
-                        this.loading = true
-                        const res = await loginApi({phone:this.form.phone})
-                        this.loading = false
-                        if(res.code === 1){
-                            sessionStorage.setItem("userPhone",this.form.phone)
-                            window.requestAnimationFrame(()=>{
-                                window.location.href= '/front/index.html'
-                            })
-                        }else{
-                            this.$notify({ type:'warning', message:res.msg});
-                        }
-                    }else{
-                        this.$notify({ type:'warning', message:'请输入手机号码'});
-                    }
-                }
             }
         })
     </script>

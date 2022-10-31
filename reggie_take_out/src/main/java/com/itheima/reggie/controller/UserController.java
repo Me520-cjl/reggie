@@ -32,11 +32,12 @@ public class UserController {
         String phone = user.getPhone();
         if(!StringUtils.isEmpty(phone)){
             //生成随机的4位验证码
-            String code = ValidateCodeUtils.generateValidateCode(4).toString();
+            //String code = ValidateCodeUtils.generateValidateCode(4).toString();
+            String code = "1234";
             log.info("code={}",code);
 
             //调用阿里云提供的短信服务API完成发送短信
-            SMSUtils.sendMessage("测试专用模板","SMS_154950909",phone,code);
+            //SMSUtils.sendMessage("测试专用模板","SMS_154950909",phone,code);
 
             //需要将生成的验证码保存到Session
             session.setAttribute(phone,code);
@@ -52,14 +53,17 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public R<User> login(@RequestBody Map map, HttpSession session){
-        log.info(map.toString());
+    public R<User> login( @RequestParam Map map, HttpSession session){
+       log.info(map.toString());
+
         //获取手机号
         String phone = map.get("phone").toString();
         //获取验证码
         String code = map.get("code").toString();
         //从Session中获取保存的验证码
         Object codeInSession = session.getAttribute(phone);
+
+
 
         //进行验证码的比对（页面提交的验证码和Session中保存的验证码比对）
         if(codeInSession != null && codeInSession.equals(code)){

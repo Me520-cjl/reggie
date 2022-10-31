@@ -44,7 +44,7 @@ public class LoginCheckFilter implements Filter {
                 // 不需要处理的请求路径的数组中再加入请求路径 /common/** , 如下:
                 "/common/**",
                 "/user/sendMsg",
-                "/user/login"
+                "/user/login",
         };
 
 
