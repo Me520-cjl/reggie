@@ -42,7 +42,9 @@ public class LoginCheckFilter implements Filter {
                 // 登录完成后在进行图片上传的测试，为了简化我们的测试，
                 // 我们可以在 LoginCheckFilter 的doFilter方法中，在
                 // 不需要处理的请求路径的数组中再加入请求路径 /common/** , 如下:
-                "/common/**"
+                "/common/**",
+                "/user/sendMsg",
+                "/user/login"
         };
 
 
@@ -61,6 +63,17 @@ public class LoginCheckFilter implements Filter {
 //        D. 判断登录状态，如果已登录，则直接放行
         if (request.getSession().getAttribute("employee")!=null){
             log.info("用户已登录，用户id为：{}",request.getSession().getAttribute("employee"));
+            filterChain.doFilter(request,response);
+            return;
+        }
+
+        //4-2、判断登录状态，如果已登录，则直接放行
+        if(request.getSession().getAttribute("user") != null){
+            log.info("用户已登录，用户id为：{}",request.getSession().getAttribute("user"));
+
+            Long userId = (Long) request.getSession().getAttribute("user");
+            BaseContext.setCurrentId(userId);
+
             filterChain.doFilter(request,response);
             return;
         }
